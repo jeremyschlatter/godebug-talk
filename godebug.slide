@@ -217,7 +217,7 @@ Repo:
 
 * Known limitations
 
-- The cli is awkward
+- The cli is awkward (see the working branch for an in-progress better version)
 - Performance overhead
 - Reads from stdin -- will cause conflict if your program reads it too
 - Can't attach to running process
