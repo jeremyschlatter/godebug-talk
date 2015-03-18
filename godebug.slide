@@ -110,12 +110,6 @@ The debugger program:
 
 (DEMO)
 
-* Starting simple
-
-Pulling code out to a library:
-
-.code godebug/simple-3.go
-
 * Code generation
 
 * Our mission
@@ -126,7 +120,7 @@ Transform this:
 
 Into this:
 
-.play godebug/longer-instrumented.go /func main/,
+.code godebug/longer-instrumented.go /func main/,
 
 * Parsing
 
