@@ -1,36 +1,39 @@
 package main
 
-// An example of a debugger implementation that does not handle concurrency correctly. OMIT
+// (Lines ending in "OMIT" won't show up in the presentation) OMIT
+// An example of two goroutines running the same function. OMIT
 
 import (
 	"fmt"
-	"sync"
 
 	"./godebug"
 )
 
 func main() {
 	godebug.Line()
-	var wg sync.WaitGroup
-	godebug.Line()
-	wg.Add(2)
+	c := make(chan bool)
+
 	godebug.SetTrace()
 	godebug.Line()
-	go Foo(&wg)
-	godebug.Line()
-	Foo(&wg)
+	go func() {
+		godebug.Line()
+		Foo()
+		godebug.Line()
+		close(c)
+	}()
 
 	godebug.Line()
-	wg.Wait()
+	Foo()
+
+	godebug.Line()
+	<-c
 }
 
-func Foo(wg *sync.WaitGroup) {
+func Foo() {
 	godebug.Line()
 	fmt.Println("here's")
 	godebug.Line()
 	fmt.Println("some")
 	godebug.Line()
 	fmt.Println("code")
-	godebug.Line()
-	wg.Done()
 }

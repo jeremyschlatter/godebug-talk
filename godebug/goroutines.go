@@ -3,23 +3,23 @@ package main
 // (Lines ending in "OMIT" won't show up in the presentation) OMIT
 // An example of two goroutines running the same function. OMIT
 
-import (
-	"fmt"
-	"sync"
-)
+import "fmt"
 
 func main() {
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go Foo(&wg)
-	Foo(&wg)
+	c := make(chan bool)
 
-	wg.Wait()
+	go func() {
+		Foo() // HL
+		close(c)
+	}()
+
+	Foo() // HL
+
+	<-c
 }
 
-func Foo(wg *sync.WaitGroup) {
+func Foo() {
 	fmt.Println("here's")
 	fmt.Println("some")
 	fmt.Println("code")
-	wg.Done()
 }

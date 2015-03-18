@@ -7,6 +7,8 @@ jeremy.schlatter@gmail.com
 github.com/mailgun/godebug
 github.com/jeremyschlatter/godebug-talk
 
+* Outline
+
 * Godebug
 
 A cool new tool you should try.
@@ -16,6 +18,10 @@ A cool new tool you should try.
 A cool (old) technique that lets you build interesting things.
 
 Well supported in Go.
+
+* Concurrency
+
+Often hard for debuggers. How to handle it?
 
 * Motivation
 
@@ -68,7 +74,7 @@ A standard, heavily-developed debugger.
 
     - https://golang.org/doc/gdb
 
-Which is explicitly not a support priority for the Go authors.
+Which is not a good fit for Go.
 
 * gdb
 
@@ -155,6 +161,47 @@ Consider this example program:
 What happens if we insert `godebug.Line()` calls here?
 
 .code godebug/goroutines-2.go /func Foo/,
+
+DEMO: goroutines-2.go
+
+* Tracking the current goroutine
+
+What if `godebug.Line` knew what the current goroutine was?
+
+  func Line(goroutineID uint32)
+
+Then we could do something like
+
+    if atomic.LoadUint32(&currentGoroutine) != goroutineID {
+        return
+    }
+
+to ignore all but the goroutine we are following.
+
+* Can we get a goroutine identifier?
+
+  We wouldn't even be having this discussion if thread local storage wasn't useful. But every 
+  feature comes at a cost, and in my opinion the cost of threadlocals far outweighs their benefits. 
+  They're just not a good fit for Go.
+
+  - Andrew Gerrand
+
+This question comes up a lot on the golang-nuts mailing list.
+
+It is not likely to be added to the runtime.
+
+* A different approach
+
+There is a beautiful little library that solves this problem:
+
+.link https://github.com/jtolds/gls github.com/jtolds/gls
+
+Here's the idea:
+
+  We define 16 special functions and embed base-16 tags into the stack using the call order of 
+  those 16 functions. Then, we can read our tags back out of the stack looking at the callers list.
+
+  We then use these tags as an index into a traditional map for implementing this library.
 
 * Wrapping up
 
