@@ -203,6 +203,10 @@ Here's the idea:
 
   We then use these tags as an index into a traditional map for implementing this library.
 
+* It works!
+
+Once we have access to a goroutine id, it is straightforward to implement concurrency support.
+
 * Wrapping up
 
 * Code generation is great
