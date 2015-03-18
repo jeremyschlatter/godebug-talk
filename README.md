@@ -6,4 +6,4 @@ The slides are written for the [go present tool](https://godoc.org/golang.org/x/
     $ cd <this directory>
     $ present
 
-Check out the tool at [github.com/mailgun/godebug](https://github.com/mailgun/godebug).
+Check out godebug at [github.com/mailgun/godebug](https://github.com/mailgun/godebug).
