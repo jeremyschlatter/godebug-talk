@@ -1,0 +1,43 @@
+Godebug extra slides
+
+Jeremy Schlatter
+Go hacker, Mailgun
+jeremy.schlatter@gmail.com
+
+github.com/mailgun/godebug
+
+* else-if
+
+* The problem
+
+  if myVar || anExpression() {
+      doSomething()
+  } else if importantFunc() {
+      doSomethingElse()
+  }
+
+Where do I insert `godebug.Line()` such that I can stop after the first case evaluates to false but before the second statement is evaluated?
+
+* This won't work
+
+.code extras/elseif1.go /START OMIT/,/END OMIT/
+
+* Wrap it?
+
+.code extras/elseif2.go /START OMIT/,/END OMIT/
+
+* Now I can't stop at the initializer
+
+.code extras/elseif3.go /START OMIT/,/END OMIT/
+
+* Wrap it again
+
+.code extras/elseif4.go /START OMIT/,/END OMIT/
+
+Complicated, but correct.
+
+* Nest it in a plain else
+
+.code extras/elseif5.go /START OMIT/,/END OMIT/
+
+A (somewhat) easier approach.
