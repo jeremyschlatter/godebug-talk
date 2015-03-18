@@ -1,0 +1,21 @@
+Thanks for checking out the example programs!
+
+Things you need to get running:
+
+    - Go, of course
+    - gdb, if you want to try it for yourself
+    - godebug:
+        $ go get github.com/mailgun/godebug
+        $ cd `go env GOPATH`/github.com/mailgun/godebug
+        $ git checkout working
+        $ go install
+
+        The version I used in my talk has a nicer interface than exists in the master branch (e.g. `godebug run <args>`),
+        but it has a lot of edge cases right now, so I haven't merged it. You can also use the `godebug -w .` interface
+        shown in godebug's README, but keep in mind that it overwrites your files.
+
+A note about breakpoints: As demoed in the talk, setting breakpoints is currently done in the source file itself, by inserting the line
+
+    godebug.SetTrace()
+
+wherever you want to break. You also need to import "github.com/mailgun/godebug" in that file. If you both (1) use goimports and (2) checked out this repository somewhere under your GOPATH, goimports might automatically insert an import like "talk/godebug/v0/godebug". If it does, just replace it with the github.com import.

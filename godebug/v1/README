@@ -1,0 +1,1 @@
+This directory includes cmd.go, which does some simple code generation. In my talk, this was the part about inserting "godebug.Line()" calls.

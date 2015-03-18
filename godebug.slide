@@ -1,0 +1,173 @@
+Godebug and the wonders of code generation
+
+Jeremy Schlatter
+Go hacker, Mailgun
+jeremy.schlatter@gmail.com
+
+github.com/mailgun/godebug
+
+* Motivation
+
+* Motivation
+
+Sometimes code does not do what we expect.
+
+.play godebug/trick.go /func main/,
+
+* Finding out what's going on
+
+.code godebug/trick.go
+
+Sometimes it's enough just to look more closely at the problematic code.
+
+* Finding out what's going on
+
+Another example
+
+.play godebug/println.go /func someSubroutine/,/^}/
+
+* Finding out what's going on
+
+Other times a well-placed print statement or two will tell you what you need to know.
+
+.play godebug/println2.go /START OMIT/,/END OMIT/
+
+* Finding out what's going on
+
+But what about bigger codebases?
+
+.image godebug/img/git-diff-stat.png 400 _
+
+3893 additions, 1243 deletions. At least 1 bug.
+
+* gdb
+
+* gdb
+
+A standard, heavily-developed debugger.
+
+* gdb
+
+A standard, heavily-developed debugger.
+
+    GDB does not understand Go programs well... Although GDB can be useful in some
+    situations, it is not a reliable debugger for Go programs, particularly heavily
+    concurrent ones. Moreover, it is not a priority for the Go project to address
+    these issues, which are difficult.
+
+    - https://golang.org/doc/gdb
+
+Which is explicitly not a support priority for the Go authors.
+
+* gdb
+
+Maybe it will work anyway?
+
+DEMO
+
+* godebug
+
+DEMO
+
+* godebug
+
+* How (and why) it works
+
+Godebug does not rely on low-level OS-specific runtime details.
+
+Instead, it takes a target program's source code and outputs _new_ source code implementing a debugger for that program.
+
+It supports heavy concurrency and is completely portable.
+
+* Starting simple
+
+The target program:
+
+.play godebug/simple.go
+
+* Starting simple
+
+The debugger program:
+
+.code godebug/simple-debugged.go
+
+(DEMO)
+
+* Starting simple
+
+Pulling code out to a library:
+
+.code godebug/simple-3.go
+
+* Code generation
+
+* Our mission
+
+Transform this:
+
+.play godebug/longer.go /func main/,
+
+Into this:
+
+.play godebug/longer-instrumented.go /func main/,
+
+* Parsing
+
+Using go/parser from the standard library:
+
+.code godebug/v1/cmd.go /START OMIT/,/END OMIT/
+
+_(See_also_golang.org/x/tools/go/loader)_
+
+* Walking the AST
+
+Only pay attention to function declarations:
+
+.code godebug/v1/cmd.go /2 START OMIT/,/2 END OMIT/
+
+Insert `godebug.Line()` as a go/ast struct literal:
+
+.play godebug/v1/cmd.go /3 START OMIT/,/3 END OMIT/
+
+_(and_print_with_go/printer)_
+
+* What about concurrency?
+
+* Concurrency
+
+Consider this example program:
+
+.play godebug/goroutines.go /func main/,
+
+* Concurrency
+
+What happens if we insert `godebug.Line()` calls here?
+
+.code godebug/goroutines-2.go /func Foo/,
+
+* Wrapping up
+
+* Code generation is great
+
+- You can implement a full, portable debugger with it. No DWARF/ELF required.
+- Packages go/* and golang.org/x/tools/go/* make it easy.
+- go generate
+
+* Try godebug
+
+Repo:
+
+.link https://github.com/mailgun/godebug
+
+* Known limitations
+
+- The cli is awkward
+- Performance overhead
+- Reads from stdin -- will cause conflict if your program reads it too
+- Can't attach to running process
+- Must know the packages you want to debug prior to starting the session
+- Not yet widely tested. ARM? Windows? gccgo? Should work, but has not been tried.
+
+There will probably be broken edge cases. Let me know when you find them!
+
+Pull requests and github issues are welcome.

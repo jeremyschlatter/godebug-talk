@@ -1,0 +1,1 @@
+Not used in my talk, but this is a sample of early stages of development of godebug. maingen.go is a hand-written debugger program for main.go. You can run it with `go run` and see what it does. The debugger logic is implemented in ./godebug.
